@@ -3,9 +3,11 @@ const { connection } = require("./db");
 const { userRouter } = require("./routes/user.routes");
 const { noteRouter } = require("./routes/notes.routes");
 const { auth } = require("./middlewares/auth.middleware");
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/users", userRouter);
 app.use("/notes", noteRouter);
