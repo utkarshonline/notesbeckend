@@ -11,14 +11,18 @@ noteRouter.post("/create", async (req, res) => {
     await note.save();
     res.status(200).json({ msg: "A new note has been created" });
   } catch (err) {
+    console.log(err);
     res.status(400).json({ error: err });
   }
 });
 
 noteRouter.get("/", async (req, res) => {
   try {
-    const notes = await NoteModel.find({ _id: req.body.userID });
-    res.status(200).json({ notes });
+    const notes = await NoteModel.find({
+      userID: req.body.userID,
+    });
+    console.log(req.body.userID);
+    res.status(200).json({ note: notes });
   } catch {
     res.status(400).json({ error: err });
   }

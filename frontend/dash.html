@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes App</title>
+    <link rel="stylesheet" href="style2.css" />
+  </head>
+  <body>
+    <div class="header">
+      <span class="username"></span>
+      <button class="create-button" onclick="createNote()">Create Note</button>
+    </div>
+    <div class="container">
+      <div class="note">
+        <input type="text" class="note-title" />
+        <textarea class="note-body"></textarea>
+        <div class="note-buttons">
+          <button class="edit-button"></button>
+          <button class="delete-button"></button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  const createNote = () => {
+    location.href = "./register.html";
+  };
+  const getdata = () => {
+    fetch("https://clumsy-zipper-eel.cyclic.app/notes/", {
+      headers: {
+        "Content-type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.notes);
+        let container = document.getElementsByClassName("container");
+        let head = document.getElementsByClassName("header");
+        let notediv = document.getElementsByClassName("note");
+        let notebtn = document.getElementsByClassName("note-buttons");
+        let notetxt = document.getElementsByClassName("note-tile");
+        let notebody = document.getElementsByClassName("note-body");
+        let username = document.getElementsByClassName("username");
+        let uDiv = document.getElementsByClassName("header");
+        let edit = document.getElementsByClassName("edit-button");
+        let deleteb = document.getElementsByClassName("delete-button");
+        username.innerText = item.username;
+        head.appendChild(username);
+
+        data.notes.forEach((item) => {
+          notetxt.innerText = item.title;
+          notbody.innerText = item.body;
+
+          edit.innerText = Edit;
+          deleteb.innerText = Delete;
+          notediv.appendChild("notetxt");
+          notediv.appendChild("notebody");
+          notediv.appendChild("edit");
+          notdiv.appendChild("delete");
+          uDiv.appendChild("username");
+          container.appendChild("notdiv");
+        });
+      });
+  };
+  getdata();
+</script>
