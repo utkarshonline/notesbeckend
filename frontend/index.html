@@ -95,16 +95,20 @@
         pass: document.getElementById("passl").value,
         email: document.getElementById("emaill").value,
       }),
-    }) // fetch yhn khtm
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        let logged = document.getElementById("logged");
-        logged.textContent = "Log in Successful";
-        localStorage.setItem("token", data.token);
-        setTimeout(() => {
-          location.href = "./dash.html";
-        }, 2000);
+        if (data.token) {
+          let logged = document.getElementById("logged");
+          logged.textContent = "Log in Successful";
+          localStorage.setItem("token", data.token);
+          setTimeout(() => {
+            location.href = "./dash.html";
+          }, 2000);
+        } else {
+          console.log("user is not reg");
+        }
       })
       .catch((err) => console.log(err));
   };
