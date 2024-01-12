@@ -11,15 +11,13 @@
       <span class="username"></span>
       <button class="create-button" onclick="createNote()">Create Note</button>
     </div>
-    <div class="container">
-      <div class="note">
+    <div class="container" id="clear">
+      <!-- <div class="note">
         <input type="text" class="note-title" />
-        <textarea class="note-body"></textarea>
-        <div class="note-buttons">
-          <button class="edit-button"></button>
-          <button class="delete-button"></button>
-        </div>
-      </div>
+        <textarea class="note-body"></textarea> -->
+      <!-- <div class="note-buttons"> -->
+      <!-- <button class="edit-button" id="">create</button> -->
+      <!-- <button class="delete-button"></button> -->
     </div>
   </body>
 </html>
@@ -27,6 +25,7 @@
   const createNote = () => {
     location.href = "./register.html";
   };
+
   const getdata = () => {
     fetch("https://clumsy-zipper-eel.cyclic.app/notes/", {
       headers: {
@@ -36,34 +35,100 @@
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.notes);
-        let container = document.getElementsByClassName("container");
-        let head = document.getElementsByClassName("header");
-        let notediv = document.getElementsByClassName("note");
-        let notebtn = document.getElementsByClassName("note-buttons");
-        let notetxt = document.getElementsByClassName("note-tile");
-        let notebody = document.getElementsByClassName("note-body");
-        let username = document.getElementsByClassName("username");
-        let uDiv = document.getElementsByClassName("header");
-        let edit = document.getElementsByClassName("edit-button");
-        let deleteb = document.getElementsByClassName("delete-button");
-        username.innerText = item.username;
-        head.appendChild(username);
+        console.log(data);
+        console.log(data.note);
+        let ccl = document.getElementById("clear");
+        ccl.innerHTML = "";
+        console.log("hello");
+        let container = document.querySelector(".container");
+        let head = document.querySelector(".header");
+        let uDiv = document.querySelector(".header .username");
 
-        data.notes.forEach((item) => {
-          notetxt.innerText = item.title;
-          notbody.innerText = item.body;
+        uDiv.innerText = data.note[0].username;
 
-          edit.innerText = Edit;
-          deleteb.innerText = Delete;
-          notediv.appendChild("notetxt");
-          notediv.appendChild("notebody");
-          notediv.appendChild("edit");
-          notdiv.appendChild("delete");
-          uDiv.appendChild("username");
-          container.appendChild("notdiv");
+        console.log(data.note.username);
+        head.appendChild(uDiv);
+        data.note.forEach((item) => {
+          let notediv = document.createElement("div");
+          notediv.className = "note";
+
+          let notetxt = document.createElement("input");
+          notetxt.type = "text";
+          notetxt.className = "note-title";
+          notetxt.value = item.title;
+
+          let notebody = document.createElement("textarea");
+          notebody.className = "note-body";
+          notebody.innerText = item.body;
+
+          let editButton = document.createElement("button");
+          editButton.className = "edit-button";
+          editButton.innerText = "Edit";
+          editButton.addEventListener("click", (e) => {
+            let editURL = `https://clumsy-zipper-eel.cyclic.app/notes/update/${item._id}`;
+            edits(editURL);
+          });
+
+          let deleteButton = document.createElement("button");
+          deleteButton.className = "delete-button";
+          deleteButton.innerText = "Delete";
+          deleteButton.addEventListener("click", (e) => {
+            let delURL = `https://clumsy-zipper-eel.cyclic.app/notes/delete/${item._id}`;
+            deletes(delURL);
+          });
+
+          let noteButtons = document.createElement("div");
+          noteButtons.className = "note-buttons";
+          noteButtons.appendChild(editButton);
+          noteButtons.appendChild(deleteButton);
+
+          notediv.appendChild(notetxt);
+          notediv.appendChild(notebody);
+          notediv.appendChild(noteButtons);
+
+          container.appendChild(notediv);
         });
-      });
+      })
+      .catch((error) => console.error(error));
   };
+
   getdata();
+
+  const deletes = (delURL) => {
+    fetch(delURL, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }) // fetch yhn khtm
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        getdata();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const edits = (editURL) => {
+    let notetxt = document.querySelector(".note-title");
+    let notebody = document.querySelector(".note-body");
+
+    fetch(editURL, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        title: notetxt.value, // Adding a comma here
+        body: notebody.value,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        getdata();
+      })
+      .catch((err) => console.log(err));
+  };
 </script>

@@ -31,8 +31,8 @@ noteRouter.get("/", async (req, res) => {
 noteRouter.patch("/update/:noteID", async (req, res) => {
   const { noteID } = req.params;
   const payload = req.body;
-  const note = await NoteModel.findOne({ _id: noteID });
   try {
+    const note = await NoteModel.findOne({ _id: noteID });
     if (note.userID === req.body.userID) {
       await NoteModel.findByIdAndUpdate({ _id: noteID }, payload);
       res.status(200).json({ msg: "user has been updated" });
